@@ -30,7 +30,12 @@ jobs:
       - run: npm ci
       - run: npm run build
 
+      # `enablement` switches the Pages source from "deploy from a branch" to
+      # "GitHub Actions". Without it the legacy branch build keeps republishing
+      # the unbundled source index.html over this one.
       - uses: actions/configure-pages@v5
+        with:
+          enablement: true
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
