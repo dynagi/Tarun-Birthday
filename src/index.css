@@ -1,0 +1,257 @@
+@import "tailwindcss";
+
+@theme {
+  /* Phase 1 — letter palette */
+  --color-paper: #efe7d8;
+  --color-paper-deep: #e4d9c2;
+  --color-paper-edge: #d9cbaa;
+  --color-ink: #3a3025;
+  --color-ink-soft: #6b5d4b;
+  --color-ink-faint: #948468;
+  --color-sage: #74855f;
+  --color-rust: #a45c34;
+
+  /* Phase 2 — stadium palette */
+  --color-pitch-dark: #05201a;
+  --color-pitch: #0e3d2c;
+  --color-pitch-light: #164f38;
+  --color-pitch-line: #cfe8d8;
+  --color-floodlight: #fff3d6;
+  --color-amber: #ffb627;
+  --color-chalk: #f3f1e7;
+  --color-card-red: #b23a2e;
+
+  /* Welcome message palette — cloud & datacenter, animated backdrop */
+  --color-cloud-night: #060d1c;
+  --color-cloud-navy: #0c1830;
+  --color-cloud-panel: #101f3d;
+  --color-cloud-blue: #5eb1ff;
+  --color-server-teal: #2fd8c7;
+  --color-rack-line: #23345a;
+  --color-cloud-mist: #cfe0ff;
+
+  /* Birthday reveal palette — celebratory, premium night sky */
+  --color-bday-night: #170f2c;
+  --color-bday-dusk: #2b1a4d;
+  --color-bday-panel: #241640;
+  --color-bday-line: #4a3573;
+  --color-bday-rose: #ff8fc0;
+  --color-bday-gold: #ffd27a;
+  --color-bday-violet: #9b7bff;
+  --color-bday-mist: #f8f0ff;
+
+  /* ── Birthday World — the persistent background identity ──
+     A warm, dim birthday room. Decoration colours are the soft festive
+     palette; the ground stays deep so every scene's light type reads. */
+  --color-bw-deep: #140d18;
+  --color-bw-mid: #241726;
+  --color-bw-panel: #1e1622;
+  --color-bw-line: #3f3145;
+  --color-bw-cream: #f7edda;
+  --color-bw-peach: #f6b98a;
+  --color-bw-pink: #eaa0b4;
+  --color-bw-lav: #b9a3e0;
+  --color-bw-blue: #8fb3d9;
+  --color-bw-yellow: #f0cf87;
+  --color-bw-orange: #e0925c;
+
+  /* Celebration palette — warm nostalgic evening, candle-lit */
+  --color-eve-night: #17100f;
+  --color-eve-room: #2b1a16;
+  --color-eve-ember: #f0b45f;
+  --color-eve-cream: #f5ead6;
+  --color-eve-line: #4b3128;
+
+  --font-display: "Fraunces", "Iowan Old Style", serif;
+  --font-body: "Lora", "Iowan Old Style", serif;
+  --font-hand: "Caveat", cursive;
+  --font-sport: "Anton", sans-serif;
+  --font-sport-body: "Oswald", sans-serif;
+  --font-mono: "JetBrains Mono", "Oswald", monospace;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+}
+
+@layer utilities {
+  .grain::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 40;
+    opacity: 0.05;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Paper fibre texture for physical-feeling surfaces (letter, envelope) */
+  .paper-texture::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.12;
+    mix-blend-mode: multiply;
+    border-radius: inherit;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)'/%3E%3C/svg%3E");
+  }
+
+  /* Soft fade at the foot of a scrollable letter */
+  .fade-foot {
+    mask-image: linear-gradient(to bottom, black calc(100% - 2.5rem), transparent 100%);
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+::selection {
+  background: var(--color-amber);
+  color: var(--color-pitch-dark);
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Birthday World — ambient decoration
+   Driven by CSS keyframes (compositor-friendly) rather than JS, so
+   ~30 drifting elements stay cheap. Only mood cross-fades use JS.
+   ────────────────────────────────────────────────────────────── */
+
+/* Keeps decoration out of the middle of the screen so content stays clean.
+   The clear ellipse is larger on phones, where content fills more width. */
+/* On phones the content fills the width, so the clear zone is a wide, short
+   band — decoration lives in the free strips above and below it. */
+.bw-edge-mask {
+  -webkit-mask-image: radial-gradient(
+    ellipse 104% 42% at 50% 50%,
+    transparent 0%,
+    transparent 42%,
+    #000 78%
+  );
+  mask-image: radial-gradient(
+    ellipse 104% 42% at 50% 50%,
+    transparent 0%,
+    transparent 42%,
+    #000 78%
+  );
+}
+
+@media (min-width: 768px) {
+  .bw-edge-mask {
+    -webkit-mask-image: radial-gradient(
+      ellipse 58% 54% at 50% 50%,
+      transparent 0%,
+      transparent 36%,
+      #000 78%
+    );
+    mask-image: radial-gradient(
+      ellipse 58% 54% at 50% 50%,
+      transparent 0%,
+      transparent 36%,
+      #000 78%
+    );
+  }
+}
+
+@keyframes bw-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(var(--bw-rot, 0deg));
+  }
+  50% {
+    transform: translate3d(var(--bw-dx, 6px), var(--bw-dy, -20px), 0)
+      rotate(calc(var(--bw-rot, 0deg) + 3deg));
+  }
+}
+
+@keyframes bw-sway {
+  0%,
+  100% {
+    transform: rotate(calc(var(--bw-rot, 0deg) - 5deg));
+  }
+  50% {
+    transform: rotate(calc(var(--bw-rot, 0deg) + 5deg));
+  }
+}
+
+@keyframes bw-twinkle {
+  0%,
+  100% {
+    opacity: 0.1;
+    transform: scale(0.65);
+  }
+  50% {
+    opacity: 0.95;
+    transform: scale(1.15);
+  }
+}
+
+@keyframes bw-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes bw-drift {
+  0% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0;
+  }
+  12% {
+    opacity: var(--bw-op, 0.55);
+  }
+  88% {
+    opacity: var(--bw-op, 0.55);
+  }
+  100% {
+    transform: translate3d(var(--bw-dx, 30px), var(--bw-dy, -112vh), 0);
+    opacity: 0;
+  }
+}
+
+@keyframes bw-breathe {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.07);
+  }
+}
+
+.bw-a {
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  will-change: transform, opacity;
+}
+
+.bw-a-linear {
+  animation-timing-function: linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bw-a,
+  .bw-a-linear {
+    animation: none !important;
+  }
+}
